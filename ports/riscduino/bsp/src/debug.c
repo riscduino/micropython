@@ -25,6 +25,23 @@ void Delay_Init(void) {
     p_ms = (uint16_t)p_us * 1000;
 }
 
+#define rdmcycle(x)  {				       \
+    uint32_t lo, hi, hi2;			       \
+    __asm__ __volatile__ ("1:\n\t"		       \
+			  "csrr %0, mcycleh\n\t"       \
+			  "csrr %1, mcycle\n\t"	       \
+			  "csrr %2, mcycleh\n\t"       \
+			  "bne  %0, %2, 1b\n\t"			\
+			  : "=r" (hi), "=r" (lo), "=r" (hi2)) ;	\
+    *(x) = lo | ((uint64_t) hi << 32); 				\
+  }
+
+
+/**
+ * \brief Pauses the program for the amount of time (in microseconds) specified as parameter.
+ *
+ * \param dwUs the number of microseconds to pause (uint32_t)
+ */
 /*********************************************************************
  * @fn      Delay_Us
  *
@@ -34,20 +51,33 @@ void Delay_Init(void) {
  *
  * @return  None
  */
-void Delay_Us(uint32_t n) {
-    uint32_t i;
 
-    SysTick->SR &= ~(1 << 0);
-    i = (uint32_t)n * p_us;
-
-    SysTick->CMP = i;
-    SysTick->CTLR |= (1 << 4) | (1 << 5) | (1 << 0);
-
-    while ((SysTick->SR & (1 << 0)) != (1 << 0)) {
-        ;
+void Delay_Us(uint32_t usec) {
+  if (usec == 0) {
+    return;
+  }
+  // TODO: Short delays at low frequencies.
+  uint64_t current, later;
+  rdmcycle(&current);
+  later = current + usec * (SystemCoreClock/1000000);
+  if (later > current) // usual case
+    {
+      while (later > current) {
+	rdmcycle(&current);
+      }
     }
-    SysTick->CTLR &= ~(1 << 0);
+  else // wrap. Though this is unlikely to be hit w/ 64-bit mcycle
+    {
+      while (later < current) {
+	rdmcycle(&current);
+      }
+      while (current < later) {
+	rdmcycle(&current);
+      }
+    }
 }
+
+
 
 /*********************************************************************
  * @fn      Delay_Ms
@@ -58,19 +88,30 @@ void Delay_Us(uint32_t n) {
  *
  * @return  None
  */
-void Delay_Ms(uint32_t n) {
-    uint32_t i;
+void Delay_Ms(uint32_t msec) {
 
-    SysTick->SR &= ~(1 << 0);
-    i = (uint32_t)n * p_ms;
-
-    SysTick->CMP = i;
-    SysTick->CTLR |= (1 << 4) | (1 << 5) | (1 << 0);
-
-    while ((SysTick->SR & (1 << 0)) != (1 << 0)) {
-        ;
+  if (msec == 0) {
+    return;
+  }
+  // TODO: Short delays at low frequencies.
+  uint64_t current, later;
+  rdmcycle(&current);
+  later = current + msec * (SystemCoreClock/1000);
+  if (later > current) // usual case
+    {
+      while (later > current) {
+	rdmcycle(&current);
+      }
     }
-    SysTick->CTLR &= ~(1 << 0);
+  else // wrap. Though this is unlikely to be hit w/ 64-bit mcycle
+    {
+      while (later < current) {
+	rdmcycle(&current);
+      }
+      while (current < later) {
+	rdmcycle(&current);
+      }
+    }
 }
 
 /*********************************************************************
@@ -103,14 +144,6 @@ void USART_Printf_Init(uint32_t baudrate) {
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    #elif (DEBUG == DEBUG_UART3)
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
 
     #endif
 
@@ -128,10 +161,6 @@ void USART_Printf_Init(uint32_t baudrate) {
     #elif (DEBUG == DEBUG_UART2)
     USART_Init(USART2, &USART_InitStructure);
     USART_Cmd(USART2, ENABLE);
-
-    #elif (DEBUG == DEBUG_UART3)
-    USART_Init(USART3, &USART_InitStructure);
-    USART_Cmd(USART3, ENABLE);
 
     #endif
 }
@@ -161,11 +190,6 @@ __attribute__((used)) int _write(int fd, char *buf, int size) {
             ;
         }
         USART_SendData(USART2, *buf++);
-        #elif (DEBUG == DEBUG_UART3)
-        while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET) {
-            ;
-        }
-        USART_SendData(USART3, *buf++);
         #endif
     }
 

@@ -1,4 +1,4 @@
-SHELL = sh -xv
+#SHELL = sh -xv
 # Include the core environment definitions; this will set $(TOP).
 CROSS_COMPILE ?= riscv64-zephyr-elf-
 include ../../py/mkenv.mk
@@ -9,7 +9,7 @@ include $(TOP)/py/py.mk
 ###############################################################################
 
 # Project specific
-BOARD ?= BES32R20XX
+BOARD ?= bes32r20xx
 TARGET = $(BOARD).elf
 
 SRC_DIR = bsp/src/
@@ -26,6 +26,8 @@ CFLAGS += -I. -I$(INC_DIR) -I$(BUILD) -I$(TOP)
 
 # Linker Flags
 LDFLAGS = -T $(LD_SCRIPT) -nostartfiles -Xlinker --gc-sections --specs=nano.specs --specs=nosys.specs
+#OBJ DUMP
+DUMPFLAGS = --source --all-headers --demangle --line-numbers --wide
 
 # Define the required object files.
 OBJ = $(PY_CORE_O) $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
@@ -55,6 +57,7 @@ $(BUILD)/$(TARGET): $(OBJ)
 	$(ECHO) "LINK $@" 
 	#$(Q)$(CC) $(LDFLAGS) -o $@ $^ $(LIBS) 
 	$(Q)$(CC) $(LDFLAGS) -o $@ $^
+	$(Q)$(OBJDUMP) $(DUMPFLAGS) $@ > $(BUILD)/$(BOARD).dump
 	$(Q)$(SIZE) $@
 
 # Include remaining core make rules.

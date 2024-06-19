@@ -17,7 +17,6 @@
 /* UART Printf Definition */
 #define DEBUG_UART1    1
 #define DEBUG_UART2    2
-#define DEBUG_UART3    3
 
 /* DEBUG UATR Definition */
 #define DEBUG   DEBUG_UART1
