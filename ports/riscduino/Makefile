@@ -43,7 +43,7 @@ SRC_C = \
     shared/runtime/stdout_helpers.c \
 
 SRC_C += $(wildcard $(SRC_DIR)*.c) 
-SRC_S += bsp/startup_ch32v30x_D8C.S
+SRC_S += bsp/startup_bes32r20xx.S
 
 # Define source files containung qstrs.
 SRC_QSTR += shared/readline/readline.c shared/runtime/pyexec.c

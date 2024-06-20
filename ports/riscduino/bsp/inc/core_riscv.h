@@ -1,11 +1,12 @@
 /********************************** (C) COPYRIGHT  *******************************
-* File Name          : core_riscv.h
-* Author             : WCH
-* Version            : V1.0.0
-* Date               : 2021/06/06
-* Description        : RISC-V Core Peripheral Access Layer Header File for CH32V30x
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+* Copyright (c) 2024  BigEndian Semiconductor Private Limited
 * SPDX-License-Identifier: Apache-2.0
+*
+* File Name          : core_riscv.h
+* Author             : Dinesh Annayya
+* Version            : V1.0.0
+* Date               : 20-June-2024
+* Description        : RISC-V Core Peripheral Access Layer Header File for BES32R20XX
 *******************************************************************************/
 #ifndef __CORE_RISCV_H__
 #define __CORE_RISCV_H__

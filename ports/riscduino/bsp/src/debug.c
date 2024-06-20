@@ -1,12 +1,13 @@
 /********************************** (C) COPYRIGHT  *******************************
+* Copyright (c) 2024  BigEndian Semiconductor Private Limited
+* SPDX-License-Identifier: Apache-2.0
+*
 * File Name          : debug.c
-* Author             : WCH
+* Author             : Dinesh Annayya
 * Version            : V1.0.0
-* Date               : 2021/06/06
+* Date               : 20-June-2024
 * Description        : This file contains all the functions prototypes for UART
 *                      Printf , Delay functions.
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
 #include "debug.h"
 
