@@ -19,6 +19,7 @@ SECTIONS
     {
         _sinit = .;
         . = ALIGN(4);
+	. = 0x1C0;
         KEEP(*(SORT_NONE(.init)))
         . = ALIGN(4);
         _einit = .;

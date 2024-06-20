@@ -48,110 +48,9 @@ typedef struct
                                          This parameter can be a value of @ref USART_Hardware_Flow_Control */
 } USART_InitTypeDef;
 
-/* USART Clock Init Structure definition */
-typedef struct
-{
 
-    uint16_t USART_Clock; /* Specifies whether the USART clock is enabled or disabled.
-                             This parameter can be a value of @ref USART_Clock */
 
-    uint16_t USART_CPOL;  /* Specifies the steady state value of the serial clock.
-                             This parameter can be a value of @ref USART_Clock_Polarity */
-
-    uint16_t USART_CPHA;  /* Specifies the clock transition on which the bit capture is made.
-                             This parameter can be a value of @ref USART_Clock_Phase */
-
-    uint16_t USART_LastBit; /* Specifies whether the clock pulse corresponding to the last transmitted
-                             data bit (MSB) has to be output on the SCLK pin in synchronous mode.
-                             This parameter can be a value of @ref USART_Last_Bit */
-} USART_ClockInitTypeDef;
-
-/* USART_Word_Length */
-#define USART_WordLength_8b                  ((uint16_t)0x0000)
-#define USART_WordLength_9b                  ((uint16_t)0x1000)
-
-/* USART_Stop_Bits */
-#define USART_StopBits_1                     ((uint16_t)0x0000)
-#define USART_StopBits_0_5                   ((uint16_t)0x1000)
-#define USART_StopBits_2                     ((uint16_t)0x2000)
-#define USART_StopBits_1_5                   ((uint16_t)0x3000)
-
-/* USART_Parity */
-#define USART_Parity_No                      ((uint16_t)0x0000)
-#define USART_Parity_Even                    ((uint16_t)0x0400)
-#define USART_Parity_Odd                     ((uint16_t)0x0600)
-
-/* USART_Mode */
-#define USART_Mode_Rx                        ((uint16_t)0x0004)
-#define USART_Mode_Tx                        ((uint16_t)0x0008)
-
-/* USART_Hardware_Flow_Control */
-#define USART_HardwareFlowControl_None       ((uint16_t)0x0000)
-#define USART_HardwareFlowControl_RTS        ((uint16_t)0x0100)
-#define USART_HardwareFlowControl_CTS        ((uint16_t)0x0200)
-#define USART_HardwareFlowControl_RTS_CTS    ((uint16_t)0x0300)
-
-/* USART_Clock */
-#define USART_Clock_Disable                  ((uint16_t)0x0000)
-#define USART_Clock_Enable                   ((uint16_t)0x0800)
-
-/* USART_Clock_Polarity */
-#define USART_CPOL_Low                       ((uint16_t)0x0000)
-#define USART_CPOL_High                      ((uint16_t)0x0400)
-
-/* USART_Clock_Phase */
-#define USART_CPHA_1Edge                     ((uint16_t)0x0000)
-#define USART_CPHA_2Edge                     ((uint16_t)0x0200)
-
-/* USART_Last_Bit */
-#define USART_LastBit_Disable                ((uint16_t)0x0000)
-#define USART_LastBit_Enable                 ((uint16_t)0x0100)
-
-/* USART_Interrupt_definition */
-#define USART_IT_PE                          ((uint16_t)0x0028)
-#define USART_IT_TXE                         ((uint16_t)0x0727)
-#define USART_IT_TC                          ((uint16_t)0x0626)
-#define USART_IT_RXNE                        ((uint16_t)0x0525)
-#define USART_IT_ORE_RX                      ((uint16_t)0x0325)
-#define USART_IT_IDLE                        ((uint16_t)0x0424)
-#define USART_IT_LBD                         ((uint16_t)0x0846)
-#define USART_IT_CTS                         ((uint16_t)0x096A)
-#define USART_IT_ERR                         ((uint16_t)0x0060)
-#define USART_IT_ORE_ER                      ((uint16_t)0x0360)
-#define USART_IT_NE                          ((uint16_t)0x0260)
-#define USART_IT_FE                          ((uint16_t)0x0160)
-
-#define USART_IT_ORE                          USART_IT_ORE_ER
-
-/* USART_DMA_Requests */
-#define USART_DMAReq_Tx                      ((uint16_t)0x0080)
-#define USART_DMAReq_Rx                      ((uint16_t)0x0040)
-
-/* USART_WakeUp_methods */
-#define USART_WakeUp_IdleLine                ((uint16_t)0x0000)
-#define USART_WakeUp_AddressMark             ((uint16_t)0x0800)
-
-/* USART_LIN_Break_Detection_Length */
-#define USART_LINBreakDetectLength_10b       ((uint16_t)0x0000)
-#define USART_LINBreakDetectLength_11b       ((uint16_t)0x0020)
-
-/* USART_IrDA_Low_Power */
-#define USART_IrDAMode_LowPower              ((uint16_t)0x0004)
-#define USART_IrDAMode_Normal                ((uint16_t)0x0000)
-
-/* USART_Flags */
-#define USART_FLAG_CTS                       ((uint16_t)0x0200)
-#define USART_FLAG_LBD                       ((uint16_t)0x0100)
-#define USART_FLAG_TXE                       ((uint16_t)0x0080)
-#define USART_FLAG_TC                        ((uint16_t)0x0040)
-#define USART_FLAG_RXNE                      ((uint16_t)0x0020)
-#define USART_FLAG_IDLE                      ((uint16_t)0x0010)
-#define USART_FLAG_ORE                       ((uint16_t)0x0008)
-#define USART_FLAG_NE                        ((uint16_t)0x0004)
-#define USART_FLAG_FE                        ((uint16_t)0x0002)
-#define USART_FLAG_PE                        ((uint16_t)0x0001)
-
-//--------- Added by Dinesh
+//Uart Defination
 
 /* USART_Private_Defines */
 #define UART_CTRL_TXEN(x)   ((x & 0x1) << 0)    // [0]
@@ -183,8 +82,6 @@ typedef struct
 void USART_DeInit(USART_TypeDef *USARTx);
 void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct);
 void USART_StructInit(USART_InitTypeDef *USART_InitStruct);
-void USART_ClockInit(USART_TypeDef *USARTx, USART_ClockInitTypeDef *USART_ClockInitStruct);
-void USART_ClockStructInit(USART_ClockInitTypeDef *USART_ClockInitStruct);
 void USART_Cmd(USART_TypeDef *USARTx, FunctionalState NewState);
 void USART_ITConfig(USART_TypeDef *USARTx, uint16_t USART_IT, FunctionalState NewState);
 void USART_SendData(USART_TypeDef *USARTx, uint8_t Data);

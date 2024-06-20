@@ -505,7 +505,7 @@ typedef struct
 
 #define AFIO_BASE             (APB2PERIPH_BASE + 0x0000)
 #define EXTI_BASE             (APB2PERIPH_BASE + 0x0400)
-#define GPIOA_BASE            (APB2PERIPH_BASE + 0x0800) // 0x40010800,0x40010C00, 0x40011000, 0x40011400, 0x40011800, 0x40011C00, 0x40012000
+#define GPIOA_BASE            (APB2PERIPH_BASE + 0x0800) 
 #define GPIOB_BASE            (APB2PERIPH_BASE + 0x0C00)
 #define GPIOC_BASE            (APB2PERIPH_BASE + 0x1000)
 #define GPIOD_BASE            (APB2PERIPH_BASE + 0x1400)
@@ -525,7 +525,6 @@ typedef struct
 #define RTC                 ((RTC_TypeDef *)RTC_BASE)
 #define I2C1                ((I2C_TypeDef *)I2C1_BASE)
 
-#define EXTI                ((EXTI_TypeDef *)EXTI_BASE)
 #define GPIOA               ((GPIO_TypeDef *)GPIOA_BASE)
 #define GPIOB               ((GPIO_TypeDef *)GPIOB_BASE)
 #define GPIOC               ((GPIO_TypeDef *)GPIOC_BASE)
@@ -535,13 +534,6 @@ typedef struct
 
 #define RCC                 ((RCC_TypeDef *)RCC_BASE)
 #define EXTEN               ((EXTEN_TypeDef *)EXTEN_BASE)
-#define OPA                 ((OPA_TypeDef *)OPA_BASE)
-#define ETH                 ((ETH_TypeDef *)ETH_BASE)
-
-#define DVP                 ((DVP_TypeDef *)DVP_BASE)
-
-
-#define OB                  ((OB_TypeDef *)OB_BASE)
 
 /******************************************************************************/
 /*                         Peripheral Registers Bits Definition               */
@@ -1579,87 +1571,6 @@ typedef struct
 /*******************  Bit definition for TIM_DMAADR register  *******************/
 #define  TIM_DMAR_DMAB                   ((uint16_t)0xFFFF)            /* DMA register for burst accesses */
 
-/******************************************************************************/
-/*         Universal Synchronous Asynchronous Receiver Transmitter            */
-/******************************************************************************/
-
-/*******************  Bit definition for USART_STATR register  *******************/
-#define  USART_STATR_PE                        ((uint16_t)0x0001)            /* Parity Error */
-#define  USART_STATR_FE                        ((uint16_t)0x0002)            /* Framing Error */
-#define  USART_STATR_NE                        ((uint16_t)0x0004)            /* Noise Error Flag */
-#define  USART_STATR_ORE                       ((uint16_t)0x0008)            /* OverRun Error */
-#define  USART_STATR_IDLE                      ((uint16_t)0x0010)            /* IDLE line detected */
-#define  USART_STATR_RXNE                      ((uint16_t)0x0020)            /* Read Data Register Not Empty */
-#define  USART_STATR_TC                        ((uint16_t)0x0040)            /* Transmission Complete */
-#define  USART_STATR_TXE                       ((uint16_t)0x0080)            /* Transmit Data Register Empty */
-#define  USART_STATR_LBD                       ((uint16_t)0x0100)            /* LIN Break Detection Flag */
-#define  USART_STATR_CTS                       ((uint16_t)0x0200)            /* CTS Flag */
-
-/*******************  Bit definition for USART_DATAR register  *******************/
-#define  USART_DATAR_DR                        ((uint16_t)0x01FF)            /* Data value */
-
-/******************  Bit definition for USART_BRR register  *******************/
-#define  USART_BRR_DIV_Fraction                ((uint16_t)0x000F)            /* Fraction of USARTDIV */
-#define  USART_BRR_DIV_Mantissa                ((uint16_t)0xFFF0)            /* Mantissa of USARTDIV */
-
-/******************  Bit definition for USART_CTLR1 register  *******************/
-#define  USART_CTLR1_SBK                       ((uint16_t)0x0001)            /* Send Break */
-#define  USART_CTLR1_RWU                       ((uint16_t)0x0002)            /* Receiver wakeup */
-#define  USART_CTLR1_RE                        ((uint16_t)0x0004)            /* Receiver Enable */
-#define  USART_CTLR1_TE                        ((uint16_t)0x0008)            /* Transmitter Enable */
-#define  USART_CTLR1_IDLEIE                    ((uint16_t)0x0010)            /* IDLE Interrupt Enable */
-#define  USART_CTLR1_RXNEIE                    ((uint16_t)0x0020)            /* RXNE Interrupt Enable */
-#define  USART_CTLR1_TCIE                      ((uint16_t)0x0040)            /* Transmission Complete Interrupt Enable */
-#define  USART_CTLR1_TXEIE                     ((uint16_t)0x0080)            /* PE Interrupt Enable */
-#define  USART_CTLR1_PEIE                      ((uint16_t)0x0100)            /* PE Interrupt Enable */
-#define  USART_CTLR1_PS                        ((uint16_t)0x0200)            /* Parity Selection */
-#define  USART_CTLR1_PCE                       ((uint16_t)0x0400)            /* Parity Control Enable */
-#define  USART_CTLR1_WAKE                      ((uint16_t)0x0800)            /* Wakeup method */
-#define  USART_CTLR1_M                         ((uint16_t)0x1000)            /* Word length */
-#define  USART_CTLR1_UE                        ((uint16_t)0x2000)            /* USART Enable */
-#define  USART_CTLR1_OVER8                     ((uint16_t)0x8000)            /* USART Oversmapling 8-bits */
-
-/******************  Bit definition for USART_CTLR2 register  *******************/
-#define  USART_CTLR2_ADD                       ((uint16_t)0x000F)            /* Address of the USART node */
-#define  USART_CTLR2_LBDL                      ((uint16_t)0x0020)            /* LIN Break Detection Length */
-#define  USART_CTLR2_LBDIE                     ((uint16_t)0x0040)            /* LIN Break Detection Interrupt Enable */
-#define  USART_CTLR2_LBCL                      ((uint16_t)0x0100)            /* Last Bit Clock pulse */
-#define  USART_CTLR2_CPHA                      ((uint16_t)0x0200)            /* Clock Phase */
-#define  USART_CTLR2_CPOL                      ((uint16_t)0x0400)            /* Clock Polarity */
-#define  USART_CTLR2_CLKEN                     ((uint16_t)0x0800)            /* Clock Enable */
-
-#define  USART_CTLR2_STOP                      ((uint16_t)0x3000)            /* STOP[1:0] bits (STOP bits) */
-#define  USART_CTLR2_STOP_0                    ((uint16_t)0x1000)            /* Bit 0 */
-#define  USART_CTLR2_STOP_1                    ((uint16_t)0x2000)            /* Bit 1 */
-
-#define  USART_CTLR2_LINEN                     ((uint16_t)0x4000)            /* LIN mode enable */
-
-/******************  Bit definition for USART_CTLR3 register  *******************/
-#define  USART_CTLR3_EIE                       ((uint16_t)0x0001)            /* Error Interrupt Enable */
-#define  USART_CTLR3_IREN                      ((uint16_t)0x0002)            /* IrDA mode Enable */
-#define  USART_CTLR3_IRLP                      ((uint16_t)0x0004)            /* IrDA Low-Power */
-#define  USART_CTLR3_HDSEL                     ((uint16_t)0x0008)            /* Half-Duplex Selection */
-#define  USART_CTLR3_NACK                      ((uint16_t)0x0010)            /* Smartcard NACK enable */
-#define  USART_CTLR3_SCEN                      ((uint16_t)0x0020)            /* Smartcard mode enable */
-#define  USART_CTLR3_DMAR                      ((uint16_t)0x0040)            /* DMA Enable Receiver */
-#define  USART_CTLR3_DMAT                      ((uint16_t)0x0080)            /* DMA Enable Transmitter */
-#define  USART_CTLR3_RTSE                      ((uint16_t)0x0100)            /* RTS Enable */
-#define  USART_CTLR3_CTSE                      ((uint16_t)0x0200)            /* CTS Enable */
-#define  USART_CTLR3_CTSIE                     ((uint16_t)0x0400)            /* CTS Interrupt Enable */
-#define  USART_CTLR3_ONEBIT                    ((uint16_t)0x0800)            /* One Bit method */
-
-/******************  Bit definition for USART_GPR register  ******************/
-#define  USART_GPR_PSC                         ((uint16_t)0x00FF)            /* PSC[7:0] bits (Prescaler value) */
-#define  USART_GPR_PSC_0                       ((uint16_t)0x0001)            /* Bit 0 */
-#define  USART_GPR_PSC_1                       ((uint16_t)0x0002)            /* Bit 1 */
-#define  USART_GPR_PSC_2                       ((uint16_t)0x0004)            /* Bit 2 */
-#define  USART_GPR_PSC_3                       ((uint16_t)0x0008)            /* Bit 3 */
-#define  USART_GPR_PSC_4                       ((uint16_t)0x0010)            /* Bit 4 */
-#define  USART_GPR_PSC_5                       ((uint16_t)0x0020)            /* Bit 5 */
-#define  USART_GPR_PSC_6                       ((uint16_t)0x0040)            /* Bit 6 */
-#define  USART_GPR_PSC_7                       ((uint16_t)0x0080)            /* Bit 7 */
-
-#define  USART_GPR_GT                          ((uint16_t)0xFF00)            /* Guard time value */
 
 
 

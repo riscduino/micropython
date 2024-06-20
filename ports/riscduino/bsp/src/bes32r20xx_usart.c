@@ -66,6 +66,9 @@ void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct) {
   USARTx->CTRL &= UART_CTRL_IFGM;
   USARTx->CTRL |= UART_CTRL_IFG(2); // 2 bit IFG
 
+  USARTx->CTRL |= UART_CTRL_TSTOP(USART_InitStruct->USART_StopBits); // 2 bit IFG
+  USARTx->CTRL |= UART_CTRL_RSTOP(USART_InitStruct->USART_StopBits); // 2 bit IFG
+  USARTx->CTRL |= UART_CTRL_PMOD(USART_InitStruct->USART_Parity); // 2 bit IFG
 
 }
 
@@ -100,41 +103,13 @@ void USART_Setbaud(USART_TypeDef *USARTx,int bauds)
  */
 void USART_StructInit(USART_InitTypeDef *USART_InitStruct) {
     USART_InitStruct->USART_BaudRate = 9600;
-    USART_InitStruct->USART_WordLength = USART_WordLength_8b;
-    USART_InitStruct->USART_StopBits = USART_StopBits_1;
-    USART_InitStruct->USART_Parity = USART_Parity_No;
-    USART_InitStruct->USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-    USART_InitStruct->USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_InitStruct->USART_WordLength = 8;
+    USART_InitStruct->USART_StopBits = UART_STOP_BIT_1;
+    USART_InitStruct->USART_Parity = UART_PRI_MODE_NOP;
+    USART_InitStruct->USART_Mode = UART_CTRL_TXEN(1) | UART_CTRL_RXEN(1);
+    USART_InitStruct->USART_HardwareFlowControl = 0;
 }
 
-/*********************************************************************
- * @fn      USART_ClockInit
- *
- * @brief   Initializes the USARTx peripheral Clock according to the
- *        specified parameters in the USART_ClockInitStruct .
- *
- * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
- *          USART_ClockInitStruct - pointer to a USART_ClockInitTypeDef
- *        structure that contains the configuration information for the specified
- *        USART peripheral.
- *
- * @return  none
- */
-void USART_ClockInit(USART_TypeDef *USARTx, USART_ClockInitTypeDef *USART_ClockInitStruct) {
-}
-
-/*********************************************************************
- * @fn      USART_ClockStructInit
- *
- * @brief   Fills each USART_ClockStructInit member with its default value.
- *
- * @param   USART_ClockInitStruct - pointer to a USART_ClockInitTypeDef
- *        structure which will be initialized.
- *
- * @return  none
- */
-void USART_ClockStructInit(USART_ClockInitTypeDef *USART_ClockInitStruct) {
-}
 
 /*********************************************************************
  * @fn      USART_Cmd
@@ -148,6 +123,14 @@ void USART_ClockStructInit(USART_ClockInitTypeDef *USART_ClockInitStruct) {
  * @return  none
  */
 void USART_Cmd(USART_TypeDef *USARTx, FunctionalState NewState) {
+	if(NewState == ENABLE) {
+             USARTx->CTRL |= UART_CTRL_TXEN(1);
+             USARTx->CTRL |= UART_CTRL_RXEN(1);
+	} else {
+             USARTx->CTRL &= UART_CTRL_TXENM;
+             USARTx->CTRL &= UART_CTRL_RXENM;
+	}
+
 }
 
 /*********************************************************************
@@ -217,6 +200,7 @@ uint8_t USART_ReceiveData(USART_TypeDef *USARTx) {
  * @return  none
  */
 void USART_SendBreak(USART_TypeDef *USARTx) {
+	USART_SendData(USARTx,0x00);
 }
 
 /*********************************************************************
@@ -276,7 +260,7 @@ FlagStatus USART_GetFlagStatus(USART_TypeDef *USARTx, uint16_t USART_FLAG) {
 /*********************************************************************
  * @fn      USART_ClearFlag
  *
- * @brief   Clears the USARTx's pending flags.
+ * @brief   Clears the USARTx's interrupt pending flags.
  *
  * @param   USARTx - where x can be 1, 2, 3 to select the USART peripheral.
  *          USART_FLAG - specifies the flag to clear.
@@ -288,10 +272,7 @@ FlagStatus USART_GetFlagStatus(USART_TypeDef *USARTx, uint16_t USART_FLAG) {
  * @return  none
  */
 void USART_ClearFlag(USART_TypeDef *USARTx, uint16_t USART_FLAG) {
-    if ((USART_FLAG & USART_FLAG_CTS) == USART_FLAG_CTS) {
-    }
-
-    USARTx->ISTAT = (uint16_t) ~USART_FLAG;
+    USARTx->ISTAT = (uint16_t) USART_FLAG;
 }
 
 /*********************************************************************

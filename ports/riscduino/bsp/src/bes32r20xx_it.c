@@ -10,8 +10,6 @@
 *******************************************************************************/
 #include "bes32r20xx_it.h"
 
-void NMI_Handler(void) __attribute__((interrupt("BES-Interrupt-fast")));
-void HardFault_Handler(void) __attribute__((interrupt("BES-Interrupt-fast")));
 
 /*********************************************************************
  * @fn      NMI_Handler
@@ -31,6 +29,11 @@ void NMI_Handler(void) {
  * @return  none
  */
 void HardFault_Handler(void) {
+    while (1) {
+    }
+}
+
+void isr_wrapper(void) {
     while (1) {
     }
 }

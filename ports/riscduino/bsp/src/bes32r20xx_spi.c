@@ -54,10 +54,6 @@
  * @return  none
  */
 void SPI_I2S_DeInit(SPI_TypeDef *SPIx) {
-    if (SPIx == SPI1) {
-        RCC_APB2PeriphResetCmd(RCC_APB2Periph_SPI1, ENABLE);
-        RCC_APB2PeriphResetCmd(RCC_APB2Periph_SPI1, DISABLE);
-    } 
 }
 
 /*********************************************************************
@@ -73,18 +69,6 @@ void SPI_I2S_DeInit(SPI_TypeDef *SPIx) {
  * @return  none
  */
 void SPI_Init(SPI_TypeDef *SPIx, SPI_InitTypeDef *SPI_InitStruct) {
-    uint16_t tmpreg = 0;
-
-    tmpreg = SPIx->CTLR1;
-    tmpreg &= CTLR1_CLEAR_Mask;
-    tmpreg |= (uint16_t)((uint32_t)SPI_InitStruct->SPI_Direction | SPI_InitStruct->SPI_Mode |
-        SPI_InitStruct->SPI_DataSize | SPI_InitStruct->SPI_CPOL |
-        SPI_InitStruct->SPI_CPHA | SPI_InitStruct->SPI_NSS |
-        SPI_InitStruct->SPI_BaudRatePrescaler | SPI_InitStruct->SPI_FirstBit);
-
-    SPIx->CTLR1 = tmpreg;
-    SPIx->I2SCFGR &= SPI_Mode_Select;
-    SPIx->CRCR = SPI_InitStruct->SPI_CRCPolynomial;
 }
 
 /*********************************************************************
@@ -100,52 +84,6 @@ void SPI_Init(SPI_TypeDef *SPIx, SPI_InitTypeDef *SPI_InitStruct) {
  * @return  none
  */
 void I2S_Init(SPI_TypeDef *SPIx, I2S_InitTypeDef *I2S_InitStruct) {
-    uint16_t tmpreg = 0, i2sdiv = 2, i2sodd = 0, packetlength = 1;
-    uint32_t tmp = 0;
-    RCC_ClocksTypeDef RCC_Clocks;
-    uint32_t sourceclock = 0;
-
-    SPIx->I2SCFGR &= I2SCFGR_CLEAR_Mask;
-    SPIx->I2SPR = 0x0002;
-    tmpreg = SPIx->I2SCFGR;
-
-    if (I2S_InitStruct->I2S_AudioFreq == I2S_AudioFreq_Default) {
-        i2sodd = (uint16_t)0;
-        i2sdiv = (uint16_t)2;
-    } else {
-        if (I2S_InitStruct->I2S_DataFormat == I2S_DataFormat_16b) {
-            packetlength = 1;
-        } else {
-            packetlength = 2;
-        }
-
-
-        RCC_GetClocksFreq(&RCC_Clocks);
-
-        sourceclock = RCC_Clocks.SYSCLK_Frequency;
-
-        if (I2S_InitStruct->I2S_MCLKOutput == I2S_MCLKOutput_Enable) {
-            tmp = (uint16_t)(((((sourceclock / 256) * 10) / I2S_InitStruct->I2S_AudioFreq)) + 5);
-        } else {
-            tmp = (uint16_t)(((((sourceclock / (32 * packetlength)) * 10) / I2S_InitStruct->I2S_AudioFreq)) + 5);
-        }
-
-        tmp = tmp / 10;
-        i2sodd = (uint16_t)(tmp & (uint16_t)0x0001);
-        i2sdiv = (uint16_t)((tmp - i2sodd) / 2);
-        i2sodd = (uint16_t)(i2sodd << 8);
-    }
-
-    if ((i2sdiv < 2) || (i2sdiv > 0xFF)) {
-        i2sdiv = 2;
-        i2sodd = 0;
-    }
-
-    SPIx->I2SPR = (uint16_t)(i2sdiv | (uint16_t)(i2sodd | (uint16_t)I2S_InitStruct->I2S_MCLKOutput));
-    tmpreg |= (uint16_t)(I2S_Mode_Select | (uint16_t)(I2S_InitStruct->I2S_Mode |
-        (uint16_t)(I2S_InitStruct->I2S_Standard | (uint16_t)(I2S_InitStruct->I2S_DataFormat |
-            (uint16_t)I2S_InitStruct->I2S_CPOL))));
-    SPIx->I2SCFGR = tmpreg;
 }
 
 /*********************************************************************
@@ -199,11 +137,6 @@ void I2S_StructInit(I2S_InitTypeDef *I2S_InitStruct) {
  * @return  none
  */
 void SPI_Cmd(SPI_TypeDef *SPIx, FunctionalState NewState) {
-    if (NewState != DISABLE) {
-        SPIx->CTLR1 |= CTLR1_SPE_Set;
-    } else {
-        SPIx->CTLR1 &= CTLR1_SPE_Reset;
-    }
 }
 
 /*********************************************************************
@@ -217,11 +150,6 @@ void SPI_Cmd(SPI_TypeDef *SPIx, FunctionalState NewState) {
  * @return  none
  */
 void I2S_Cmd(SPI_TypeDef *SPIx, FunctionalState NewState) {
-    if (NewState != DISABLE) {
-        SPIx->I2SCFGR |= I2SCFGR_I2SE_Set;
-    } else {
-        SPIx->I2SCFGR &= I2SCFGR_I2SE_Reset;
-    }
 }
 
 /*********************************************************************
@@ -241,16 +169,6 @@ void I2S_Cmd(SPI_TypeDef *SPIx, FunctionalState NewState) {
  * @return  none
  */
 void SPI_I2S_ITConfig(SPI_TypeDef *SPIx, uint8_t SPI_I2S_IT, FunctionalState NewState) {
-    uint16_t itpos = 0, itmask = 0;
-
-    itpos = SPI_I2S_IT >> 4;
-    itmask = (uint16_t)1 << (uint16_t)itpos;
-
-    if (NewState != DISABLE) {
-        SPIx->CTLR2 |= itmask;
-    } else {
-        SPIx->CTLR2 &= (uint16_t) ~itmask;
-    }
 }
 
 /*********************************************************************
@@ -270,11 +188,6 @@ void SPI_I2S_ITConfig(SPI_TypeDef *SPIx, uint8_t SPI_I2S_IT, FunctionalState New
  * @return  none
  */
 void SPI_I2S_DMACmd(SPI_TypeDef *SPIx, uint16_t SPI_I2S_DMAReq, FunctionalState NewState) {
-    if (NewState != DISABLE) {
-        SPIx->CTLR2 |= SPI_I2S_DMAReq;
-    } else {
-        SPIx->CTLR2 &= (uint16_t) ~SPI_I2S_DMAReq;
-    }
 }
 
 /*********************************************************************
@@ -290,7 +203,6 @@ void SPI_I2S_DMACmd(SPI_TypeDef *SPIx, uint16_t SPI_I2S_DMAReq, FunctionalState 
  * @return  none
  */
 void SPI_I2S_SendData(SPI_TypeDef *SPIx, uint16_t Data) {
-    SPIx->DATAR = Data;
 }
 
 /*********************************************************************
@@ -306,7 +218,7 @@ void SPI_I2S_SendData(SPI_TypeDef *SPIx, uint16_t Data) {
  * @return  SPIx->DATAR - The value of the received data.
  */
 uint16_t SPI_I2S_ReceiveData(SPI_TypeDef *SPIx) {
-    return SPIx->DATAR;
+    return 0;
 }
 
 /*********************************************************************
@@ -322,11 +234,6 @@ uint16_t SPI_I2S_ReceiveData(SPI_TypeDef *SPIx) {
  * @return  none
  */
 void SPI_NSSInternalSoftwareConfig(SPI_TypeDef *SPIx, uint16_t SPI_NSSInternalSoft) {
-    if (SPI_NSSInternalSoft != SPI_NSSInternalSoft_Reset) {
-        SPIx->CTLR1 |= SPI_NSSInternalSoft_Set;
-    } else {
-        SPIx->CTLR1 &= SPI_NSSInternalSoft_Reset;
-    }
 }
 
 /*********************************************************************
@@ -340,11 +247,6 @@ void SPI_NSSInternalSoftwareConfig(SPI_TypeDef *SPIx, uint16_t SPI_NSSInternalSo
  * @return  none
  */
 void SPI_SSOutputCmd(SPI_TypeDef *SPIx, FunctionalState NewState) {
-    if (NewState != DISABLE) {
-        SPIx->CTLR2 |= CTLR2_SSOE_Set;
-    } else {
-        SPIx->CTLR2 &= CTLR2_SSOE_Reset;
-    }
 }
 
 /*********************************************************************
@@ -360,8 +262,6 @@ void SPI_SSOutputCmd(SPI_TypeDef *SPIx, FunctionalState NewState) {
  * @return  none
  */
 void SPI_DataSizeConfig(SPI_TypeDef *SPIx, uint16_t SPI_DataSize) {
-    SPIx->CTLR1 &= (uint16_t) ~SPI_DataSize_16b;
-    SPIx->CTLR1 |= SPI_DataSize;
 }
 
 /*********************************************************************
@@ -374,7 +274,6 @@ void SPI_DataSizeConfig(SPI_TypeDef *SPIx, uint16_t SPI_DataSize) {
  * @return  none
  */
 void SPI_TransmitCRC(SPI_TypeDef *SPIx) {
-    SPIx->CTLR1 |= CTLR1_CRCNext_Set;
 }
 
 /*********************************************************************
@@ -388,11 +287,6 @@ void SPI_TransmitCRC(SPI_TypeDef *SPIx) {
  * @return  none
  */
 void SPI_CalculateCRC(SPI_TypeDef *SPIx, FunctionalState NewState) {
-    if (NewState != DISABLE) {
-        SPIx->CTLR1 |= CTLR1_CRCEN_Set;
-    } else {
-        SPIx->CTLR1 &= CTLR1_CRCEN_Reset;
-    }
 }
 
 /*********************************************************************
@@ -408,15 +302,7 @@ void SPI_CalculateCRC(SPI_TypeDef *SPIx, FunctionalState NewState) {
  * @return  crcreg: The selected CRC register value.
  */
 uint16_t SPI_GetCRC(SPI_TypeDef *SPIx, uint8_t SPI_CRC) {
-    uint16_t crcreg = 0;
-
-    if (SPI_CRC != SPI_CRC_Rx) {
-        crcreg = SPIx->TCRCR;
-    } else {
-        crcreg = SPIx->RCRCR;
-    }
-
-    return crcreg;
+    return 0;
 }
 
 /*********************************************************************
@@ -429,7 +315,7 @@ uint16_t SPI_GetCRC(SPI_TypeDef *SPIx, uint8_t SPI_CRC) {
  * @return  SPIx->CRCR - The CRC Polynomial register value.
  */
 uint16_t SPI_GetCRCPolynomial(SPI_TypeDef *SPIx) {
-    return SPIx->CRCR;
+    return 0;
 }
 
 /*********************************************************************
@@ -447,11 +333,6 @@ uint16_t SPI_GetCRCPolynomial(SPI_TypeDef *SPIx) {
  * @return  none
  */
 void SPI_BiDirectionalLineConfig(SPI_TypeDef *SPIx, uint16_t SPI_Direction) {
-    if (SPI_Direction == SPI_Direction_Tx) {
-        SPIx->CTLR1 |= SPI_Direction_Tx;
-    } else {
-        SPIx->CTLR1 &= SPI_Direction_Rx;
-    }
 }
 
 /*********************************************************************
@@ -475,15 +356,7 @@ void SPI_BiDirectionalLineConfig(SPI_TypeDef *SPIx, uint16_t SPI_Direction) {
  * @return  none
  */
 FlagStatus SPI_I2S_GetFlagStatus(SPI_TypeDef *SPIx, uint16_t SPI_I2S_FLAG) {
-    FlagStatus bitstatus = RESET;
-
-    if ((SPIx->STATR & SPI_I2S_FLAG) != (uint16_t)RESET) {
-        bitstatus = SET;
-    } else {
-        bitstatus = RESET;
-    }
-
-    return bitstatus;
+    return 0;
 }
 
 /*********************************************************************
@@ -500,7 +373,6 @@ FlagStatus SPI_I2S_GetFlagStatus(SPI_TypeDef *SPIx, uint16_t SPI_I2S_FLAG) {
  * @return  none
  */
 void SPI_I2S_ClearFlag(SPI_TypeDef *SPIx, uint16_t SPI_I2S_FLAG) {
-    SPIx->STATR = (uint16_t) ~SPI_I2S_FLAG;
 }
 
 /*********************************************************************
@@ -522,21 +394,7 @@ void SPI_I2S_ClearFlag(SPI_TypeDef *SPIx, uint16_t SPI_I2S_FLAG) {
  * @return  FlagStatus: SET or RESET.
  */
 ITStatus SPI_I2S_GetITStatus(SPI_TypeDef *SPIx, uint8_t SPI_I2S_IT) {
-    ITStatus bitstatus = RESET;
-    uint16_t itpos = 0, itmask = 0, enablestatus = 0;
-
-    itpos = 0x01 << (SPI_I2S_IT & 0x0F);
-    itmask = SPI_I2S_IT >> 4;
-    itmask = 0x01 << itmask;
-    enablestatus = (SPIx->CTLR2 & itmask);
-
-    if (((SPIx->STATR & itpos) != (uint16_t)RESET) && enablestatus) {
-        bitstatus = SET;
-    } else {
-        bitstatus = RESET;
-    }
-
-    return bitstatus;
+    return 0;
 }
 
 /*********************************************************************
@@ -552,8 +410,4 @@ ITStatus SPI_I2S_GetITStatus(SPI_TypeDef *SPIx, uint8_t SPI_I2S_IT) {
  * @return  none
  */
 void SPI_I2S_ClearITPendingBit(SPI_TypeDef *SPIx, uint8_t SPI_I2S_IT) {
-    uint16_t itpos = 0;
-
-    itpos = 0x01 << (SPI_I2S_IT & 0x0F);
-    SPIx->STATR = (uint16_t) ~itpos;
 }

@@ -22,7 +22,7 @@ static uint16_t p_ms = 0;
  * @return  none
  */
 void Delay_Init(void) {
-    p_us = SystemCoreClock / 8000000;
+    p_us = SystemCoreClock / 1000000;
     p_ms = (uint16_t)p_us * 1000;
 }
 
@@ -125,43 +125,23 @@ void Delay_Ms(uint32_t msec) {
  * @return  None
  */
 void USART_Printf_Init(uint32_t baudrate) {
-    GPIO_InitTypeDef GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
 
-    #if (DEBUG == DEBUG_UART1)
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA, ENABLE);
-
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-    #elif (DEBUG == DEBUG_UART2)
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-
-    #endif
-
     USART_InitStructure.USART_BaudRate = baudrate;
-    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-    USART_InitStructure.USART_StopBits = USART_StopBits_1;
-    USART_InitStructure.USART_Parity = USART_Parity_No;
-    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-    USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
+    USART_InitStructure.USART_WordLength = 0;
+    USART_InitStructure.USART_StopBits = UART_STOP_BIT_1;
+    USART_InitStructure.USART_Parity = UART_PRI_MODE_NOP;
+    USART_InitStructure.USART_HardwareFlowControl = 0;
+    USART_InitStructure.USART_Mode = UART_CTRL_TXEN(1) | UART_CTRL_RXEN(1);
+
 
     #if (DEBUG == DEBUG_UART1)
     USART_Init(UART0, &USART_InitStructure);
     USART_Cmd(UART0, ENABLE);
 
     #elif (DEBUG == DEBUG_UART2)
-    USART_Init(USART2, &USART_InitStructure);
-    USART_Cmd(USART2, ENABLE);
+    USART_Init(UART1, &USART_InitStructure);
+    USART_Cmd(UART1, ENABLE);
 
     #endif
 }
@@ -182,15 +162,9 @@ __attribute__((used)) int _write(int fd, char *buf, int size) {
     for (i = 0; i < size; i++)
     {
         #if (DEBUG == DEBUG_UART1)
-        while (USART_GetFlagStatus(UART0, USART_FLAG_TC) == RESET) {
-            ;
-        }
         USART_SendData(UART0, *buf++);
         #elif (DEBUG == DEBUG_UART2)
-        while (USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET) {
-            ;
-        }
-        USART_SendData(USART2, *buf++);
+        USART_SendData(UART1, *buf++);
         #endif
     }
 

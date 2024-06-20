@@ -29,6 +29,9 @@ LDFLAGS = -T $(LD_SCRIPT) -nostartfiles -Xlinker --gc-sections --specs=nano.spec
 #OBJ DUMP
 DUMPFLAGS = --source --all-headers --demangle --line-numbers --wide
 
+#Verilog Copy
+COPYFLAGS = -R .rel.dyn -O verilog
+
 # Define the required object files.
 OBJ = $(PY_CORE_O) $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_S:.S=.o))
@@ -58,6 +61,7 @@ $(BUILD)/$(TARGET): $(OBJ)
 	#$(Q)$(CC) $(LDFLAGS) -o $@ $^ $(LIBS) 
 	$(Q)$(CC) $(LDFLAGS) -o $@ $^
 	$(Q)$(OBJDUMP) $(DUMPFLAGS) $@ > $(BUILD)/$(BOARD).dump
+	$(Q)$(OBJCOPY) $(COPYFLAGS) $@  $(BUILD)/$(BOARD).hex
 	$(Q)$(SIZE) $@
 
 # Include remaining core make rules.

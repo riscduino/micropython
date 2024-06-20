@@ -27,11 +27,6 @@
  * @return  NewState - new state of the specified RTC interrupts(ENABLE or DISABLE).
  */
 void RTC_ITConfig(uint16_t RTC_IT, FunctionalState NewState) {
-    if (NewState != DISABLE) {
-        RTC->CTLRH |= RTC_IT;
-    } else {
-        RTC->CTLRH &= (uint16_t) ~RTC_IT;
-    }
 }
 
 /*********************************************************************
@@ -42,7 +37,6 @@ void RTC_ITConfig(uint16_t RTC_IT, FunctionalState NewState) {
  * @return  none
  */
 void RTC_EnterConfigMode(void) {
-    RTC->CTLRL |= RTC_CTLRL_CNF;
 }
 
 /*********************************************************************
@@ -53,7 +47,6 @@ void RTC_EnterConfigMode(void) {
  * @return  none
  */
 void RTC_ExitConfigMode(void) {
-    RTC->CTLRL &= (uint16_t) ~((uint16_t)RTC_CTLRL_CNF);
 }
 
 /*********************************************************************
@@ -64,17 +57,6 @@ void RTC_ExitConfigMode(void) {
  * @return  RTC counter value
  */
 uint32_t RTC_GetCounter(void) {
-    uint16_t high1 = 0, high2 = 0, low = 0;
-
-    high1 = RTC->CNTH;
-    low = RTC->CNTL;
-    high2 = RTC->CNTH;
-
-    if (high1 != high2) {
-        return ((uint32_t)high2 << 16) | RTC->CNTL;
-    } else {
-        return ((uint32_t)high1 << 16) | low;
-    }
 }
 
 /*********************************************************************
@@ -87,10 +69,6 @@ uint32_t RTC_GetCounter(void) {
  * @return  RTC counter value
  */
 void RTC_SetCounter(uint32_t CounterValue) {
-    RTC_EnterConfigMode();
-    RTC->CNTH = CounterValue >> 16;
-    RTC->CNTL = (CounterValue & RTC_LSB_MASK);
-    RTC_ExitConfigMode();
 }
 
 /*********************************************************************
@@ -103,10 +81,6 @@ void RTC_SetCounter(uint32_t CounterValue) {
  * @return  none
  */
 void RTC_SetPrescaler(uint32_t PrescalerValue) {
-    RTC_EnterConfigMode();
-    RTC->PSCRH = (PrescalerValue & PRLH_MSB_MASK) >> 16;
-    RTC->PSCRL = (PrescalerValue & RTC_LSB_MASK);
-    RTC_ExitConfigMode();
 }
 
 /*********************************************************************
@@ -119,10 +93,6 @@ void RTC_SetPrescaler(uint32_t PrescalerValue) {
  * @return  none
  */
 void RTC_SetAlarm(uint32_t AlarmValue) {
-    RTC_EnterConfigMode();
-    RTC->ALRMH = AlarmValue >> 16;
-    RTC->ALRML = (AlarmValue & RTC_LSB_MASK);
-    RTC_ExitConfigMode();
 }
 
 /*********************************************************************
@@ -133,10 +103,7 @@ void RTC_SetAlarm(uint32_t AlarmValue) {
  * @return  RTC Divider value
  */
 uint32_t RTC_GetDivider(void) {
-    uint32_t tmp = 0x00;
-    tmp = ((uint32_t)RTC->DIVH & (uint32_t)0x000F) << 16;
-    tmp |= RTC->DIVL;
-    return tmp;
+    return 0;
 }
 
 /*********************************************************************
@@ -147,8 +114,6 @@ uint32_t RTC_GetDivider(void) {
  * @return  none
  */
 void RTC_WaitForLastTask(void) {
-    while ((RTC->CTLRL & RTC_FLAG_RTOFF) == (uint16_t)RESET) {
-    }
 }
 
 /*********************************************************************
@@ -159,9 +124,6 @@ void RTC_WaitForLastTask(void) {
  * @return  none
  */
 void RTC_WaitForSynchro(void) {
-    RTC->CTLRL &= (uint16_t) ~RTC_FLAG_RSF;
-    while ((RTC->CTLRL & RTC_FLAG_RSF) == (uint16_t)RESET) {
-    }
 }
 
 /*********************************************************************
@@ -179,13 +141,7 @@ void RTC_WaitForSynchro(void) {
  * @return  none
  */
 FlagStatus RTC_GetFlagStatus(uint16_t RTC_FLAG) {
-    FlagStatus bitstatus = RESET;
-    if ((RTC->CTLRL & RTC_FLAG) != (uint16_t)RESET) {
-        bitstatus = SET;
-    } else {
-        bitstatus = RESET;
-    }
-    return bitstatus;
+    return 0;
 }
 
 /*********************************************************************
@@ -202,7 +158,6 @@ FlagStatus RTC_GetFlagStatus(uint16_t RTC_FLAG) {
  * @return  none
  */
 void RTC_ClearFlag(uint16_t RTC_FLAG) {
-    RTC->CTLRL &= (uint16_t) ~RTC_FLAG;
 }
 
 /*********************************************************************
@@ -218,15 +173,7 @@ void RTC_ClearFlag(uint16_t RTC_FLAG) {
  * @return  The new state of the RTC_IT (SET or RESET)
  */
 ITStatus RTC_GetITStatus(uint16_t RTC_IT) {
-    ITStatus bitstatus = RESET;
-
-    bitstatus = (ITStatus)(RTC->CTLRL & RTC_IT);
-    if (((RTC->CTLRH & RTC_IT) != (uint16_t)RESET) && (bitstatus != (uint16_t)RESET)) {
-        bitstatus = SET;
-    } else {
-        bitstatus = RESET;
-    }
-    return bitstatus;
+    return 0;
 }
 
 /*********************************************************************
@@ -242,5 +189,4 @@ ITStatus RTC_GetITStatus(uint16_t RTC_IT) {
  * @return  none
  */
 void RTC_ClearITPendingBit(uint16_t RTC_IT) {
-    RTC->CTLRL &= (uint16_t) ~RTC_IT;
 }
