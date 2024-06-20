@@ -57,15 +57,7 @@ void SPI_I2S_DeInit(SPI_TypeDef *SPIx) {
     if (SPIx == SPI1) {
         RCC_APB2PeriphResetCmd(RCC_APB2Periph_SPI1, ENABLE);
         RCC_APB2PeriphResetCmd(RCC_APB2Periph_SPI1, DISABLE);
-    } else if (SPIx == SPI2) {
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_SPI2, ENABLE);
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_SPI2, DISABLE);
-    } else {
-        if (SPIx == SPI3) {
-            RCC_APB1PeriphResetCmd(RCC_APB1Periph_SPI3, ENABLE);
-            RCC_APB1PeriphResetCmd(RCC_APB1Periph_SPI3, DISABLE);
-        }
-    }
+    } 
 }
 
 /*********************************************************************
@@ -127,11 +119,6 @@ void I2S_Init(SPI_TypeDef *SPIx, I2S_InitTypeDef *I2S_InitStruct) {
             packetlength = 2;
         }
 
-        if (((uint32_t)SPIx) == SPI2_BASE) {
-            tmp = I2S2_CLOCK_SRC;
-        } else {
-            tmp = I2S3_CLOCK_SRC;
-        }
 
         RCC_GetClocksFreq(&RCC_Clocks);
 

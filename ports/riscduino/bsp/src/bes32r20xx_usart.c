@@ -11,29 +11,6 @@
 #include "bes32r20xx_usart.h"
 #include "bes32r20xx_rcc.h"
 
-/* USART_Private_Defines */
-#define CTLR1_UE_Set              ((uint16_t)0x2000) /* USART Enable Mask */
-#define CTLR1_UE_Reset            ((uint16_t)0xDFFF) /* USART Disable Mask */
-
-#define CTLR1_WAKE_Mask           ((uint16_t)0xF7FF) /* USART WakeUp Method Mask */
-
-#define CTLR1_RWU_Set             ((uint16_t)0x0002) /* USART mute mode Enable Mask */
-#define CTLR1_RWU_Reset           ((uint16_t)0xFFFD) /* USART mute mode Enable Mask */
-#define CTLR1_SBK_Set             ((uint16_t)0x0001) /* USART Break Character send Mask */
-#define CTLR1_CLEAR_Mask          ((uint16_t)0xE9F3) /* USART CR1 Mask */
-#define CTLR2_Address_Mask        ((uint16_t)0xFFF0) /* USART address Mask */
-
-#define CTLR2_LINEN_Set           ((uint16_t)0x4000) /* USART LIN Enable Mask */
-#define CTLR2_LINEN_Reset         ((uint16_t)0xBFFF) /* USART LIN Disable Mask */
-
-#define CTLR2_LBDL_Mask           ((uint16_t)0xFFDF) /* USART LIN Break detection Mask */
-#define CTLR2_STOP_CLEAR_Mask     ((uint16_t)0xCFFF) /* USART CR2 STOP Bits Mask */
-#define CTLR2_CLOCK_CLEAR_Mask    ((uint16_t)0xF0FF) /* USART CR2 Clock Mask */
-
-#define GPR_LSB_Mask              ((uint16_t)0x00FF) /* Guard Time Register LSB Mask */
-#define GPR_MSB_Mask              ((uint16_t)0xFF00) /* Guard Time Register MSB Mask */
-#define IT_Mask                   ((uint16_t)0x001F) /* USART Interrupt Mask */
-
 
 /*********************************************************************
  * @fn      USART_DeInit
@@ -46,13 +23,15 @@
  * @return  none
  */
 void USART_DeInit(USART_TypeDef *USARTx) {
-    if (USARTx == USART1) {
-        RCC_APB2PeriphResetCmd(RCC_APB2Periph_USART1, ENABLE);
-        RCC_APB2PeriphResetCmd(RCC_APB2Periph_USART1, DISABLE);
-    } else if (USARTx == USART2) {
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_USART2, ENABLE);
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_USART2, DISABLE);
-    }
+     if(USARTx == UART0) { // UART-0
+     GLBL_REG(GLBL_CFG0)        |= DRST_UART0;
+     GLBL_REG(GLBL_MULTI_FUNC) &= ~MFUNC_MUART_ENB; // Disable Master UART
+     GLBL_REG(GLBL_MULTI_FUNC) |= MFUNC_UART0_ENB;  // Enable Slave UART
+  } else { // UART-1
+     GLBL_REG(GLBL_CFG0)        |= DRST_UART1;
+     GLBL_REG(GLBL_MULTI_FUNC)  |= MFUNC_UART1_ENB;
+  }
+
 }
 
 /*********************************************************************
@@ -69,42 +48,46 @@ void USART_DeInit(USART_TypeDef *USARTx) {
  * @return  none
  */
 void USART_Init(USART_TypeDef *USARTx, USART_InitTypeDef *USART_InitStruct) {
-    uint32_t tmpreg = 0x00, apbclock = 0x00;
-    uint32_t integerdivider = 0x00;
-    uint32_t fractionaldivider = 0x00;
-    uint32_t usartxbase = 0;
-    RCC_ClocksTypeDef RCC_ClocksStatus;
 
-    if (USART_InitStruct->USART_HardwareFlowControl != USART_HardwareFlowControl_None) {
-    }
+  if(USARTx == UART0) { // UART-0
+     GLBL_REG(GLBL_CFG0)        |= DRST_UART0;
+     GLBL_REG(GLBL_MULTI_FUNC) &= ~MFUNC_MUART_ENB; // Disable Master UART
+     GLBL_REG(GLBL_MULTI_FUNC) |= MFUNC_UART0_ENB;  // Enable Slave UART
+  } else { // UART-1
+     GLBL_REG(GLBL_CFG0)        |= DRST_UART1;
+     GLBL_REG(GLBL_MULTI_FUNC) |= MFUNC_UART1_ENB;
+  }
 
-    usartxbase = (uint32_t)USARTx;
-    tmpreg = USARTx->CTLR2;
-    tmpreg &= CTLR2_STOP_CLEAR_Mask;
-    tmpreg |= (uint32_t)USART_InitStruct->USART_StopBits;
+  USART_Setbaud(USARTx,USART_InitStruct->USART_BaudRate);
 
-    USARTx->CTLR2 = (uint16_t)tmpreg;
-    tmpreg = USARTx->CTLR1;
-    tmpreg &= CTLR1_CLEAR_Mask;
-    tmpreg |= (uint32_t)USART_InitStruct->USART_WordLength | USART_InitStruct->USART_Parity |
-        USART_InitStruct->USART_Mode;
-    USARTx->CTLR1 = (uint16_t)tmpreg;
+  USARTx->CTRL |= UART_CTRL_TXEN(1);
+  USARTx->CTRL |= UART_CTRL_RXEN(1);
 
-    RCC_GetClocksFreq(&RCC_ClocksStatus);
-
-    if (usartxbase == USART1_BASE) {
-        apbclock = RCC_ClocksStatus.PCLK2_Frequency;
-    } else {
-        apbclock = RCC_ClocksStatus.PCLK1_Frequency;
-    }
-
-    tmpreg = (integerdivider / 100) << 4;
-
-    fractionaldivider = integerdivider - (100 * (tmpreg >> 4));
+  USARTx->CTRL &= UART_CTRL_IFGM;
+  USARTx->CTRL |= UART_CTRL_IFG(2); // 2 bit IFG
 
 
-    USARTx->BRR = (uint16_t)tmpreg;
 }
+
+/****************************************************************
+// 16x Baud clock generation
+//  Baud Rate config = (F_CPU / (BAUD * 16)) - 2 
+// Example: to generate 19200 Baud clock from 50Mhz Link clock
+//    cfg_baud_16x = ((50 * 1000 * 1000) / (19200 * 16)) - 2
+//    cfg_baud_16x = 0xA0 (160)
+****************************************************************/
+
+void USART_Setbaud(USART_TypeDef *USARTx,int bauds)
+{
+
+  uint32_t F_Baud; 
+  F_Baud = (SystemCoreClock/(bauds * 16)) - 2;
+
+  USARTx->BAUD_LSB = F_Baud & 0xFF;
+  USARTx->BAUD_MSB = (F_Baud >> 8) & 0x0F;
+ 
+}
+
 
 /*********************************************************************
  * @fn      USART_StructInit
@@ -138,13 +121,6 @@ void USART_StructInit(USART_InitTypeDef *USART_InitStruct) {
  * @return  none
  */
 void USART_ClockInit(USART_TypeDef *USARTx, USART_ClockInitTypeDef *USART_ClockInitStruct) {
-    uint32_t tmpreg = 0x00;
-
-    tmpreg = USARTx->CTLR2;
-    tmpreg &= CTLR2_CLOCK_CLEAR_Mask;
-    tmpreg |= (uint32_t)USART_ClockInitStruct->USART_Clock | USART_ClockInitStruct->USART_CPOL |
-        USART_ClockInitStruct->USART_CPHA | USART_ClockInitStruct->USART_LastBit;
-    USARTx->CTLR2 = (uint16_t)tmpreg;
 }
 
 /*********************************************************************
@@ -158,10 +134,6 @@ void USART_ClockInit(USART_TypeDef *USARTx, USART_ClockInitTypeDef *USART_ClockI
  * @return  none
  */
 void USART_ClockStructInit(USART_ClockInitTypeDef *USART_ClockInitStruct) {
-    USART_ClockInitStruct->USART_Clock = USART_Clock_Disable;
-    USART_ClockInitStruct->USART_CPOL = USART_CPOL_Low;
-    USART_ClockInitStruct->USART_CPHA = USART_CPHA_1Edge;
-    USART_ClockInitStruct->USART_LastBit = USART_LastBit_Disable;
 }
 
 /*********************************************************************
@@ -176,11 +148,6 @@ void USART_ClockStructInit(USART_ClockInitTypeDef *USART_ClockInitStruct) {
  * @return  none
  */
 void USART_Cmd(USART_TypeDef *USARTx, FunctionalState NewState) {
-    if (NewState != DISABLE) {
-        USARTx->CTLR1 |= CTLR1_UE_Set;
-    } else {
-        USARTx->CTLR1 &= CTLR1_UE_Reset;
-    }
 }
 
 /*********************************************************************
@@ -204,30 +171,6 @@ void USART_Cmd(USART_TypeDef *USARTx, FunctionalState NewState) {
  * @return  none
  */
 void USART_ITConfig(USART_TypeDef *USARTx, uint16_t USART_IT, FunctionalState NewState) {
-    uint32_t usartreg = 0x00, itpos = 0x00, itmask = 0x00;
-    uint32_t usartxbase = 0x00;
-
-    if (USART_IT == USART_IT_CTS) {
-    }
-
-    usartxbase = (uint32_t)USARTx;
-    usartreg = (((uint8_t)USART_IT) >> 0x05);
-    itpos = USART_IT & IT_Mask;
-    itmask = (((uint32_t)0x01) << itpos);
-
-    if (usartreg == 0x01) {
-        usartxbase += 0x0C;
-    } else if (usartreg == 0x02) {
-        usartxbase += 0x10;
-    } else {
-        usartxbase += 0x14;
-    }
-
-    if (NewState != DISABLE) {
-        *(__IO uint32_t *)usartxbase |= itmask;
-    } else {
-        *(__IO uint32_t *)usartxbase &= ~itmask;
-    }
 }
 
 
@@ -241,8 +184,11 @@ void USART_ITConfig(USART_TypeDef *USARTx, uint16_t USART_IT, FunctionalState Ne
  *
  * @return  none
  */
-void USART_SendData(USART_TypeDef *USARTx, uint16_t Data) {
-    USARTx->DATAR = (Data & (uint16_t)0x01FF);
+void USART_SendData(USART_TypeDef *USARTx, uint8_t Data) {
+
+  while (USARTx->STAT & UART_TX_FIFO_FULL); // Wait if FIFO if full
+  USARTx->TDATA = Data;
+
 }
 
 /*********************************************************************
@@ -254,8 +200,11 @@ void USART_SendData(USART_TypeDef *USARTx, uint16_t Data) {
  *
  * @return  The received data.
  */
-uint16_t USART_ReceiveData(USART_TypeDef *USARTx) {
-    return (uint16_t)(USARTx->DATAR & (uint16_t)0x01FF);
+uint8_t USART_ReceiveData(USART_TypeDef *USARTx) {
+
+   while (USARTx->STAT & UART_RX_FIFO_EMPTY); // Wait if FIFO if full
+   return (uint8_t)(USARTx->RDATA);
+
 }
 
 /*********************************************************************
@@ -268,7 +217,6 @@ uint16_t USART_ReceiveData(USART_TypeDef *USARTx) {
  * @return  none
  */
 void USART_SendBreak(USART_TypeDef *USARTx) {
-    USARTx->CTLR1 |= CTLR1_SBK_Set;
 }
 
 /*********************************************************************
@@ -282,8 +230,8 @@ void USART_SendBreak(USART_TypeDef *USARTx) {
  * @return  none
  */
 void USART_SetGuardTime(USART_TypeDef *USARTx, uint8_t USART_GuardTime) {
-    USARTx->GPR &= GPR_LSB_Mask;
-    USARTx->GPR |= (uint16_t)((uint16_t)USART_GuardTime << 0x08);
+    USARTx->CTRL &= UART_CTRL_IFGM;
+    USARTx->CTRL |= UART_CTRL_IFG(USART_GuardTime);
 }
 
 /*********************************************************************
@@ -297,8 +245,6 @@ void USART_SetGuardTime(USART_TypeDef *USARTx, uint8_t USART_GuardTime) {
  * @return  none
  */
 void USART_SetPrescaler(USART_TypeDef *USARTx, uint8_t USART_Prescaler) {
-    USARTx->GPR &= GPR_MSB_Mask;
-    USARTx->GPR |= USART_Prescaler;
 }
 
 /*********************************************************************
@@ -324,14 +270,6 @@ void USART_SetPrescaler(USART_TypeDef *USARTx, uint8_t USART_Prescaler) {
 FlagStatus USART_GetFlagStatus(USART_TypeDef *USARTx, uint16_t USART_FLAG) {
     FlagStatus bitstatus = RESET;
 
-    if (USART_FLAG == USART_FLAG_CTS) {
-    }
-
-    if ((USARTx->STATR & USART_FLAG) != (uint16_t)RESET) {
-        bitstatus = SET;
-    } else {
-        bitstatus = RESET;
-    }
     return bitstatus;
 }
 
@@ -353,7 +291,7 @@ void USART_ClearFlag(USART_TypeDef *USARTx, uint16_t USART_FLAG) {
     if ((USART_FLAG & USART_FLAG_CTS) == USART_FLAG_CTS) {
     }
 
-    USARTx->STATR = (uint16_t) ~USART_FLAG;
+    USARTx->ISTAT = (uint16_t) ~USART_FLAG;
 }
 
 /*********************************************************************
@@ -378,31 +316,8 @@ void USART_ClearFlag(USART_TypeDef *USARTx, uint16_t USART_FLAG) {
  * @return  none
  */
 ITStatus USART_GetITStatus(USART_TypeDef *USARTx, uint16_t USART_IT) {
-    uint32_t bitpos = 0x00, itmask = 0x00, usartreg = 0x00;
     ITStatus bitstatus = RESET;
 
-    if (USART_IT == USART_IT_CTS) {
-    }
-
-    usartreg = (((uint8_t)USART_IT) >> 0x05);
-    itmask = USART_IT & IT_Mask;
-    itmask = (uint32_t)0x01 << itmask;
-
-    if (usartreg == 0x01) {
-        itmask &= USARTx->CTLR1;
-    } else if (usartreg == 0x02) {
-        itmask &= USARTx->CTLR2;
-    } 
-
-    bitpos = USART_IT >> 0x08;
-    bitpos = (uint32_t)0x01 << bitpos;
-    bitpos &= USARTx->STATR;
-
-    if ((itmask != (uint16_t)RESET) && (bitpos != (uint16_t)RESET)) {
-        bitstatus = SET;
-    } else {
-        bitstatus = RESET;
-    }
 
     return bitstatus;
 }
@@ -422,12 +337,5 @@ ITStatus USART_GetITStatus(USART_TypeDef *USARTx, uint16_t USART_IT) {
  * @return  none
  */
 void USART_ClearITPendingBit(USART_TypeDef *USARTx, uint16_t USART_IT) {
-    uint16_t bitpos = 0x00, itmask = 0x00;
 
-    if (USART_IT == USART_IT_CTS) {
-    }
-
-    bitpos = USART_IT >> 0x08;
-    itmask = ((uint16_t)0x01 << (uint16_t)bitpos);
-    USARTx->STATR = (uint16_t) ~itmask;
 }

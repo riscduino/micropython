@@ -566,24 +566,6 @@ void RCC_GetClocksFreq(RCC_ClocksTypeDef *RCC_Clocks) {
                 }
             }
 
-            if (pllsource == 0x00) {
-                if (EXTEN->EXTEN_CTR & EXTEN_PLL_HSI_PRE) {
-                    RCC_Clocks->SYSCLK_Frequency = (HSI_VALUE)*pllmull;
-                } else {
-                    RCC_Clocks->SYSCLK_Frequency = (HSI_VALUE >> 1) * pllmull;
-                }
-            } else {
-                if ((RCC->CFGR0 & CFGR0_PLLXTPRE_Mask) != (uint32_t)RESET) {
-                    RCC_Clocks->SYSCLK_Frequency = (HSE_VALUE >> 1) * pllmull;
-                } else {
-                    RCC_Clocks->SYSCLK_Frequency = HSE_VALUE * pllmull;
-                }
-            }
-
-            if (Pll_6_5 == 1) {
-                RCC_Clocks->SYSCLK_Frequency = (RCC_Clocks->SYSCLK_Frequency / 2);
-            }
-
             break;
 
         default:

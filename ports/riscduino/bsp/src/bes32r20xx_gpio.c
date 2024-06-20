@@ -42,10 +42,7 @@ void GPIO_DeInit(GPIO_TypeDef *GPIOx) {
     } else if (GPIOx == GPIOD) {
         RCC_APB2PeriphResetCmd(RCC_APB2Periph_GPIOD, ENABLE);
         RCC_APB2PeriphResetCmd(RCC_APB2Periph_GPIOD, DISABLE);
-    } else if (GPIOx == GPIOE) {
-        RCC_APB2PeriphResetCmd(RCC_APB2Periph_GPIOE, ENABLE);
-        RCC_APB2PeriphResetCmd(RCC_APB2Periph_GPIOE, DISABLE);
-    }
+    } 
 }
 
 /*********************************************************************
@@ -324,11 +321,6 @@ void GPIO_PinLockConfig(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin) {
 void GPIO_EventOutputConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource) {
     uint32_t tmpreg = 0x00;
 
-    tmpreg = AFIO->ECR;
-    tmpreg &= ECR_PORTPINCONFIG_MASK;
-    tmpreg |= (uint32_t)GPIO_PortSource << 0x04;
-    tmpreg |= GPIO_PinSource;
-    AFIO->ECR = tmpreg;
 }
 
 /*********************************************************************
@@ -341,11 +333,6 @@ void GPIO_EventOutputConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource) {
  * @return  none
  */
 void GPIO_EventOutputCmd(FunctionalState NewState) {
-    if (NewState) {
-        AFIO->ECR |= (1 << 7);
-    } else {
-        AFIO->ECR &= ~(1 << 7);
-    }
 }
 
 /*********************************************************************
@@ -408,50 +395,6 @@ void GPIO_EventOutputCmd(FunctionalState NewState) {
 void GPIO_PinRemapConfig(uint32_t GPIO_Remap, FunctionalState NewState) {
     uint32_t tmp = 0x00, tmp1 = 0x00, tmpreg = 0x00, tmpmask = 0x00;
 
-    if ((GPIO_Remap & 0x80000000) == 0x80000000) {
-        tmpreg = AFIO->PCFR2;
-    } else {
-        tmpreg = AFIO->PCFR1;
-    }
-
-    tmpmask = (GPIO_Remap & DBGAFR_POSITION_MASK) >> 0x10;
-    tmp = GPIO_Remap & LSB_MASK;
-
-    /* Clear bit */
-    if ((GPIO_Remap & 0x80000000) == 0x80000000) {                                                                       /* PCFR2 */
-        if ((GPIO_Remap & (DBGAFR_LOCATION_MASK | DBGAFR_NUMBITS_MASK)) == (DBGAFR_LOCATION_MASK | DBGAFR_NUMBITS_MASK)) { /* [31:16] 2bit */
-            tmp1 = ((uint32_t)0x03) << (tmpmask + 0x10);
-            tmpreg &= ~tmp1;
-        } else if ((GPIO_Remap & DBGAFR_NUMBITS_MASK) == DBGAFR_NUMBITS_MASK) { /* [15:0] 2bit */
-            tmp1 = ((uint32_t)0x03) << tmpmask;
-            tmpreg &= ~tmp1;
-        } else { /* [31:0] 1bit */
-            tmpreg &= ~(tmp << ((GPIO_Remap >> 0x15) * 0x10));
-        }
-    } else {                                                                                                            /* PCFR1 */
-        if ((GPIO_Remap & (DBGAFR_LOCATION_MASK | DBGAFR_NUMBITS_MASK)) == (DBGAFR_LOCATION_MASK | DBGAFR_NUMBITS_MASK)) { /* [26:24] 3bit SWD_JTAG */
-            tmpreg &= DBGAFR_SWJCFG_MASK;
-            AFIO->PCFR1 &= DBGAFR_SWJCFG_MASK;
-        } else if ((GPIO_Remap & DBGAFR_NUMBITS_MASK) == DBGAFR_NUMBITS_MASK) { /* [15:0] 2bit */
-            tmp1 = ((uint32_t)0x03) << tmpmask;
-            tmpreg &= ~tmp1;
-            tmpreg |= ~DBGAFR_SWJCFG_MASK;
-        } else { /* [31:0] 1bit */
-            tmpreg &= ~(tmp << ((GPIO_Remap >> 0x15) * 0x10));
-            tmpreg |= ~DBGAFR_SWJCFG_MASK;
-        }
-    }
-
-    /* Set bit */
-    if (NewState != DISABLE) {
-        tmpreg |= (tmp << ((GPIO_Remap >> 0x15) * 0x10));
-    }
-
-    if ((GPIO_Remap & 0x80000000) == 0x80000000) {
-        AFIO->PCFR2 = tmpreg;
-    } else {
-        AFIO->PCFR1 = tmpreg;
-    }
 }
 
 /*********************************************************************
@@ -469,9 +412,6 @@ void GPIO_PinRemapConfig(uint32_t GPIO_Remap, FunctionalState NewState) {
 void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource) {
     uint32_t tmp = 0x00;
 
-    tmp = ((uint32_t)0x0F) << (0x04 * (GPIO_PinSource & (uint8_t)0x03));
-    AFIO->EXTICR[GPIO_PinSource >> 0x02] &= ~tmp;
-    AFIO->EXTICR[GPIO_PinSource >> 0x02] |= (((uint32_t)GPIO_PortSource) << (0x04 * (GPIO_PinSource & (uint8_t)0x03)));
 }
 
 /*********************************************************************
@@ -486,9 +426,4 @@ void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource) {
  * @return  none
  */
 void GPIO_ETH_MediaInterfaceConfig(uint32_t GPIO_ETH_MediaInterface) {
-    if (GPIO_ETH_MediaInterface) {
-        AFIO->PCFR1 |= (1 << 23);
-    } else {
-        AFIO->PCFR1 &= ~(1 << 23);
-    }
 }

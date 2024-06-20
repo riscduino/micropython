@@ -425,81 +425,12 @@ void TIM_Cmd(TIM_TypeDef *TIMx, FunctionalState NewState);
 void TIM_CtrlPWMOutputs(TIM_TypeDef *TIMx, FunctionalState NewState);
 void TIM_ITConfig(TIM_TypeDef *TIMx, uint16_t TIM_IT, FunctionalState NewState);
 void TIM_GenerateEvent(TIM_TypeDef *TIMx, uint16_t TIM_EventSource);
-void TIM_DMAConfig(TIM_TypeDef *TIMx, uint16_t TIM_DMABase, uint16_t TIM_DMABurstLength);
 void TIM_DMACmd(TIM_TypeDef *TIMx, uint16_t TIM_DMASource, FunctionalState NewState);
-void TIM_InternalClockConfig(TIM_TypeDef *TIMx);
-void TIM_ITRxExternalClockConfig(TIM_TypeDef *TIMx, uint16_t TIM_InputTriggerSource);
-void TIM_TIxExternalClockConfig(TIM_TypeDef *TIMx, uint16_t TIM_TIxExternalCLKSource,
-    uint16_t TIM_ICPolarity, uint16_t ICFilter);
-void TIM_ETRClockMode1Config(TIM_TypeDef *TIMx, uint16_t TIM_ExtTRGPrescaler, uint16_t TIM_ExtTRGPolarity,
-    uint16_t ExtTRGFilter);
-void TIM_ETRClockMode2Config(TIM_TypeDef *TIMx, uint16_t TIM_ExtTRGPrescaler,
-    uint16_t TIM_ExtTRGPolarity, uint16_t ExtTRGFilter);
 void TIM_ETRConfig(TIM_TypeDef *TIMx, uint16_t TIM_ExtTRGPrescaler, uint16_t TIM_ExtTRGPolarity,
     uint16_t ExtTRGFilter);
 void TIM_PrescalerConfig(TIM_TypeDef *TIMx, uint16_t Prescaler, uint16_t TIM_PSCReloadMode);
 void TIM_CounterModeConfig(TIM_TypeDef *TIMx, uint16_t TIM_CounterMode);
 void TIM_SelectInputTrigger(TIM_TypeDef *TIMx, uint16_t TIM_InputTriggerSource);
-void TIM_EncoderInterfaceConfig(TIM_TypeDef *TIMx, uint16_t TIM_EncoderMode,
-    uint16_t TIM_IC1Polarity, uint16_t TIM_IC2Polarity);
-void TIM_ForcedOC1Config(TIM_TypeDef *TIMx, uint16_t TIM_ForcedAction);
-void TIM_ForcedOC2Config(TIM_TypeDef *TIMx, uint16_t TIM_ForcedAction);
-void TIM_ForcedOC3Config(TIM_TypeDef *TIMx, uint16_t TIM_ForcedAction);
-void TIM_ForcedOC4Config(TIM_TypeDef *TIMx, uint16_t TIM_ForcedAction);
-void TIM_ARRPreloadConfig(TIM_TypeDef *TIMx, FunctionalState NewState);
-void TIM_SelectCOM(TIM_TypeDef *TIMx, FunctionalState NewState);
-void TIM_SelectCCDMA(TIM_TypeDef *TIMx, FunctionalState NewState);
-void TIM_CCPreloadControl(TIM_TypeDef *TIMx, FunctionalState NewState);
-void TIM_OC1PreloadConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCPreload);
-void TIM_OC2PreloadConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCPreload);
-void TIM_OC3PreloadConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCPreload);
-void TIM_OC4PreloadConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCPreload);
-void TIM_OC1FastConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCFast);
-void TIM_OC2FastConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCFast);
-void TIM_OC3FastConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCFast);
-void TIM_OC4FastConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCFast);
-void TIM_ClearOC1Ref(TIM_TypeDef *TIMx, uint16_t TIM_OCClear);
-void TIM_ClearOC2Ref(TIM_TypeDef *TIMx, uint16_t TIM_OCClear);
-void TIM_ClearOC3Ref(TIM_TypeDef *TIMx, uint16_t TIM_OCClear);
-void TIM_ClearOC4Ref(TIM_TypeDef *TIMx, uint16_t TIM_OCClear);
-void TIM_OC1PolarityConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCPolarity);
-void TIM_OC1NPolarityConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCNPolarity);
-void TIM_OC2PolarityConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCPolarity);
-void TIM_OC2NPolarityConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCNPolarity);
-void TIM_OC3PolarityConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCPolarity);
-void TIM_OC3NPolarityConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCNPolarity);
-void TIM_OC4PolarityConfig(TIM_TypeDef *TIMx, uint16_t TIM_OCPolarity);
-void TIM_CCxCmd(TIM_TypeDef *TIMx, uint16_t TIM_Channel, uint16_t TIM_CCx);
-void TIM_CCxNCmd(TIM_TypeDef *TIMx, uint16_t TIM_Channel, uint16_t TIM_CCxN);
-void TIM_SelectOCxM(TIM_TypeDef *TIMx, uint16_t TIM_Channel, uint16_t TIM_OCMode);
-void TIM_UpdateDisableConfig(TIM_TypeDef *TIMx, FunctionalState NewState);
-void TIM_UpdateRequestConfig(TIM_TypeDef *TIMx, uint16_t TIM_UpdateSource);
-void TIM_SelectHallSensor(TIM_TypeDef *TIMx, FunctionalState NewState);
-void TIM_SelectOnePulseMode(TIM_TypeDef *TIMx, uint16_t TIM_OPMode);
-void TIM_SelectOutputTrigger(TIM_TypeDef *TIMx, uint16_t TIM_TRGOSource);
-void TIM_SelectSlaveMode(TIM_TypeDef *TIMx, uint16_t TIM_SlaveMode);
-void TIM_SelectMasterSlaveMode(TIM_TypeDef *TIMx, uint16_t TIM_MasterSlaveMode);
-void TIM_SetCounter(TIM_TypeDef *TIMx, uint16_t Counter);
-void TIM_SetAutoreload(TIM_TypeDef *TIMx, uint16_t Autoreload);
-void TIM_SetCompare1(TIM_TypeDef *TIMx, uint16_t Compare1);
-void TIM_SetCompare2(TIM_TypeDef *TIMx, uint16_t Compare2);
-void TIM_SetCompare3(TIM_TypeDef *TIMx, uint16_t Compare3);
-void TIM_SetCompare4(TIM_TypeDef *TIMx, uint16_t Compare4);
-void TIM_SetIC1Prescaler(TIM_TypeDef *TIMx, uint16_t TIM_ICPSC);
-void TIM_SetIC2Prescaler(TIM_TypeDef *TIMx, uint16_t TIM_ICPSC);
-void TIM_SetIC3Prescaler(TIM_TypeDef *TIMx, uint16_t TIM_ICPSC);
-void TIM_SetIC4Prescaler(TIM_TypeDef *TIMx, uint16_t TIM_ICPSC);
-void TIM_SetClockDivision(TIM_TypeDef *TIMx, uint16_t TIM_CKD);
-uint16_t TIM_GetCapture1(TIM_TypeDef *TIMx);
-uint16_t TIM_GetCapture2(TIM_TypeDef *TIMx);
-uint16_t TIM_GetCapture3(TIM_TypeDef *TIMx);
-uint16_t TIM_GetCapture4(TIM_TypeDef *TIMx);
-uint16_t TIM_GetCounter(TIM_TypeDef *TIMx);
-uint16_t TIM_GetPrescaler(TIM_TypeDef *TIMx);
-FlagStatus TIM_GetFlagStatus(TIM_TypeDef *TIMx, uint16_t TIM_FLAG);
-void TIM_ClearFlag(TIM_TypeDef *TIMx, uint16_t TIM_FLAG);
-ITStatus TIM_GetITStatus(TIM_TypeDef *TIMx, uint16_t TIM_IT);
-void TIM_ClearITPendingBit(TIM_TypeDef *TIMx, uint16_t TIM_IT);
 
 #ifdef __cplusplus
 }

@@ -156,8 +156,8 @@ void USART_Printf_Init(uint32_t baudrate) {
     USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
 
     #if (DEBUG == DEBUG_UART1)
-    USART_Init(USART1, &USART_InitStructure);
-    USART_Cmd(USART1, ENABLE);
+    USART_Init(UART0, &USART_InitStructure);
+    USART_Cmd(UART0, ENABLE);
 
     #elif (DEBUG == DEBUG_UART2)
     USART_Init(USART2, &USART_InitStructure);
@@ -182,10 +182,10 @@ __attribute__((used)) int _write(int fd, char *buf, int size) {
     for (i = 0; i < size; i++)
     {
         #if (DEBUG == DEBUG_UART1)
-        while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET) {
+        while (USART_GetFlagStatus(UART0, USART_FLAG_TC) == RESET) {
             ;
         }
-        USART_SendData(USART1, *buf++);
+        USART_SendData(UART0, *buf++);
         #elif (DEBUG == DEBUG_UART2)
         while (USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET) {
             ;
