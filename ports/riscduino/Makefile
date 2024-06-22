@@ -12,6 +12,7 @@ include $(TOP)/py/py.mk
 BOARD ?= bes32r20xx
 TARGET = $(BOARD).elf
 
+
 SRC_DIR = bsp/src/
 INC_DIR = bsp/inc/
 
@@ -46,7 +47,7 @@ SRC_C = \
     shared/runtime/stdout_helpers.c \
 
 SRC_C += $(wildcard $(SRC_DIR)*.c) 
-SRC_S += bsp/startup_bes32r20xx.S
+SRC_S += bsp/startup.S
 
 # Define source files containung qstrs.
 SRC_QSTR += shared/readline/readline.c shared/runtime/pyexec.c
@@ -63,6 +64,9 @@ $(BUILD)/$(TARGET): $(OBJ)
 	$(Q)$(OBJDUMP) $(DUMPFLAGS) $@ > $(BUILD)/$(BOARD).dump
 	$(Q)$(OBJCOPY) $(COPYFLAGS) $@  $(BUILD)/$(BOARD).hex
 	$(Q)$(SIZE) $@
+
+prog: $(BUILD)/$(TARGET)
+	openocd -s openocd/  -f openocd/riscduino_d32a1.cfg -c "init" -c targets -c riscduino-halt -c targets -c 'riscduino-load build/bes32r20xx.elf' -c 'riscduino-reset' -c resume -c targets -d2
 
 # Include remaining core make rules.
 include $(TOP)/py/mkrules.mk

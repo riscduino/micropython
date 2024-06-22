@@ -23,13 +23,6 @@
  * @return  none
  */
 void I2C_DeInit(I2C_TypeDef *I2Cx) {
-    if (I2Cx == I2C1) {
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
-    } else {
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, ENABLE);
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, DISABLE);
-    }
 }
 
 /*********************************************************************

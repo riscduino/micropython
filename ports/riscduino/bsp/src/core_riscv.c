@@ -9,6 +9,10 @@
 * Description            : RISC-V Core Peripheral Access Layer Source File
 *******************************************************************************/
 #include <stdint.h>
+#include "riscv_tasks.h"
+
+extern uint32_t SystemCoreClock;
+extern uint32_t SystemClockPeriodNs;
 
 /* define compiler specific symbols */
 #if defined(__CC_ARM)
@@ -514,4 +518,21 @@ uint32_t __get_SP(void) {
 
     asm volatile ("mv %0," "sp" : "=r" (result) :);
     return result;
+}
+
+uint64_t get_timer_value()
+{
+  while (1) {
+    uint32_t hi = read_csr(mcycleh);
+    uint32_t lo = read_csr(mcycle);
+    if (hi == read_csr(mcycleh))
+      return ((uint64_t)hi << 32) | lo;
+  }
+}
+
+// Get Time in milisecond
+uint32_t mp_hal_ticks_ms() {
+
+uint64_t milliseconds = ((uint64_t) get_timer_value() * (uint64_t) 1000000000) / (uint64_t) SystemCoreClock ;
+     return (uint32_t) milliseconds;
 }

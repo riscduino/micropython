@@ -15,6 +15,9 @@
 #define MICROPY_PY_IO                           (0)
 #define MICROPY_PY_STRUCT                       (0)
 
+#define MICROPY_DEBUG_PRINTERS                  (1)
+#define MP_NEED_LOG2                            (1)
+
 // Type definitions for the specific machine.
 
 typedef intptr_t mp_int_t; // must be pointer size

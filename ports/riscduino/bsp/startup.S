@@ -13,6 +13,11 @@
 	.global	_start
 	.global	isr_wrapper
 	.align	4
+
+#define GLBL_CFG_MAIL_BOX              0x1002003C      // Mail Box for TB and RISCV Communication
+#define TEST_START_CMD                 0x00000001      // Test Start Indication
+
+
 _vector_base:
 	/* Interrupts */
 	j isr_wrapper	/* 0x1c0 IRQ 0 */
@@ -67,6 +72,13 @@ _start:
     li	t5,0
     li	t6,0
 
+ # get core id
+  csrr a0, mhartid
+  # for now, assume only 1 core
+  li a1, 1
+1:bgeu a0, a1, 1b
+
+
 	la gp, __global_pointer
 	la sp, _eusrstack 
 
@@ -97,8 +109,14 @@ _start:
         csrw mtvec, t0
         csrsi  mtvec, 1  // set vectored mode
 
-        jal  SystemInit
-        jal  DeviceInit
+    jal  SystemInit
+    jal  DeviceInit
+
+    // Send Mail Box Message to TB
+    li  t0, GLBL_CFG_MAIL_BOX
+    li  t1, TEST_START_CMD             
+    sw  t1, (t0)                      
+
 	la t0, main
 	csrw mepc, t0
 	mret

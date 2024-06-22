@@ -11,6 +11,7 @@
 #include "bes32r20xx.h"
 
 uint32_t SystemCoreClock = 50000000;     /* System Clock Frequency: 50Mhz  */
+//uint32_t SystemCoreClock = 29491200;     /* System Clock Frequency: 29.4912Mhz  */
 
 
 /* system_private_function_proto_types */
