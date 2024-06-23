@@ -1,5 +1,5 @@
 /********************************** (C) COPYRIGHT  *******************************
-* Copyright (c) 2024  BigEndian Semiconductor Private Limited
+* Copyright (c) 2024  SiPlusPlus Semiconductor Private Limited
 * SPDX-License-Identifier: Apache-2.0
 *
 * File Name          : debug.c

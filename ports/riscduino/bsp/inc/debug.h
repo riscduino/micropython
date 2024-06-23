@@ -1,5 +1,5 @@
 /********************************** (C) COPYRIGHT  *******************************
-* Copyright (c) 2024  BigEndian Semiconductor Private Limited
+* Copyright (c) 2024  SiPlusPlus Semiconductor Private Limited
 * SPDX-License-Identifier: Apache-2.0
 *
 * File Name          : debug.h
@@ -13,7 +13,7 @@
 #define __DEBUG_H
 
 #include "stdio.h"
-#include "bes32r20xx.h"
+#include "spp32r20xx.h"
 
 /* UART Printf Definition */
 #define DEBUG_UART1    1

@@ -1,12 +1,12 @@
 /********************************** (C) COPYRIGHT  *******************************
-* Copyright (c) 2024  BigEndian Semiconductor Private Limited
+* Copyright (c) 2024  SiPlusPlus Semiconductor Private Limited
 * SPDX-License-Identifier: Apache-2.0
 *
 * File Name          : core_riscv.h
 * Author             : Dinesh Annayya
 * Version            : V1.0.0
 * Date               : 20-June-2024
-* Description        : RISC-V Core Peripheral Access Layer Header File for BES32R20XX
+* Description        : RISC-V Core Peripheral Access Layer Header File for SPP32R20XX
 *******************************************************************************/
 #ifndef __CORE_RISCV_H__
 #define __CORE_RISCV_H__

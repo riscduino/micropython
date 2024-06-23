@@ -1,22 +1,22 @@
 /********************************** (C) COPYRIGHT  *******************************
-* Copyright (c) 2024  BigEndian Semiconductor Private Limited
+* Copyright (c) 2024  SiPlusPlus Semiconductor Private Limited
 * SPDX-License-Identifier: Apache-2.0
 *
-* File Name          : bes32r20xx_gpio.h
+* File Name          : spp32r20xx_gpio.h
 * Author             : Dinesh Annayya
 * Version            : V1.0.0
 * Date               : 20-June-2024
 * Description        : This file contains all the functions prototypes for the
 *                      GPIO firmware library.
 *******************************************************************************/
-#ifndef __BES32R20XX_GPIO_H
-#define __BES32R20XX_GPIO_H
+#ifndef __SPP32R20XX_GPIO_H
+#define __SPP32R20XX_GPIO_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "bes32r20xx.h"
+#include "spp32r20xx.h"
 
 #define GLBL_CHIP_ID        (0x00)  // CHIP OD
 #define GLBL_CFG0           (0x04)  // Global Config-0

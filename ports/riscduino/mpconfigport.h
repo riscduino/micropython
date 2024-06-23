@@ -29,6 +29,6 @@ typedef long mp_off_t;
 
 // Define the port's name and hardware.
 #define MICROPY_HW_BOARD_NAME "riscduino-uno"
-#define MICROPY_HW_MCU_NAME   "BES32R2"
+#define MICROPY_HW_MCU_NAME   "SPP32R2"
 
 #define MP_STATE_PORT MP_STATE_VM

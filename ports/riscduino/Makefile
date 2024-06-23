@@ -9,7 +9,7 @@ include $(TOP)/py/py.mk
 ###############################################################################
 
 # Project specific
-BOARD ?= bes32r20xx
+BOARD ?= spp32r20xx
 TARGET = $(BOARD).elf
 
 
@@ -17,7 +17,7 @@ SRC_DIR = bsp/src/
 INC_DIR = bsp/inc/
 
 # Linker Script
-LD_SCRIPT = bsp/bes32r20xx.ld
+LD_SCRIPT = bsp/spp32r20xx.ld
 
 # Set CFLAGS and libraries.
 CFLAGS  = -march=rv32imc_zicsr -mabi=ilp32 -msmall-data-limit=8 -mno-save-restore -Os

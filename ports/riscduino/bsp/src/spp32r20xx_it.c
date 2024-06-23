@@ -1,14 +1,14 @@
 /********************************** (C) COPYRIGHT *******************************
-* Copyright (c) 2024  BigEndian Semiconductor Private Limited
+* Copyright (c) 2024  SiPlusPlus Semiconductor Private Limited
 * SPDX-License-Identifier: Apache-2.0
 *
-* File Name          : bes32r20xx_it.c
+* File Name          : spp32r20xx_it.c
 * Author             : Dinesh Annayya
 * Version            : V1.0.0
 * Date               : 20-June-2024
 * Description        : Main Interrupt Service Routines.
 *******************************************************************************/
-#include "bes32r20xx_it.h"
+#include "spp32r20xx_it.h"
 
 
 /*********************************************************************

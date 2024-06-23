@@ -1,22 +1,22 @@
 /********************************** (C) COPYRIGHT *******************************
-* Copyright (c) 2024  BigEndian Semiconductor Private Limited
+* Copyright (c) 2024  SiPlusPlus Semiconductor Private Limited
 * SPDX-License-Identifier: Apache-2.0
 *
-* File Name              : bes32r20xx_usart.c
+* File Name              : spp32r20xx_usart.c
 * Author                 : Dinesh Annayya
 * Version                : V1.0.0
 * Date                   : 20-June-2024
 * Description            : This file provides all the USART firmware functions.
 *******************************************************************************/
 
-#ifndef __BES32R20XX_USART_H
-#define __BES32R20XX_USART_H
+#ifndef __SPP32R20XX_USART_H
+#define __SPP32R20XX_USART_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "bes32r20xx.h"
+#include "spp32r20xx.h"
 
 
 /* USART Init Structure definition */

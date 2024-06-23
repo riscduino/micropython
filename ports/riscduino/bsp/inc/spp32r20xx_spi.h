@@ -1,22 +1,22 @@
 /********************************** (C) COPYRIGHT  *******************************
-* Copyright (c) 2024  BigEndian Semiconductor Private Limited
+* Copyright (c) 2024  SiPlusPlus Semiconductor Private Limited
 * SPDX-License-Identifier: Apache-2.0
 *
-* File Name          : bes32r20xx_spi.h
+* File Name          : spp32r20xx_spi.h
 * Author             : Dinesh Annayya
 * Version            : V1.0.0
 * Date               : 20-June-2024
 * Description        : This file contains all the functions prototypes for the
 *                      SPI firmware library.
 *******************************************************************************/
-#ifndef __BES32R20XX_SPI_H
-#define __BES32R20XX_SPI_H
+#ifndef __SPP32R20XX_SPI_H
+#define __SPP32R20XX_SPI_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "bes32r20xx.h"
+#include "spp32r20xx.h"
 
 /* SPI Init structure definition */
 typedef struct

@@ -1,16 +1,16 @@
 /********************************** (C) COPYRIGHT *******************************
-* Copyright (c) 2024  BigEndian Semiconductor Private Limited
+* Copyright (c) 2024  SiPlusPlus Semiconductor Private Limited
 * SPDX-License-Identifier: Apache-2.0
 *
-* File Name              : bes32r20xx.h
+* File Name              : spp32r20xx.h
 * Author                 : Dinesh Annayya
 * Version                : V1.0.0
 * Date                   : 20-June-2024
 * Description            : SOC Level Defines
 *******************************************************************************/
 
-#ifndef __BES32R20XX_H
-#define __BES32R20XX_H
+#ifndef __SPP32R20XX_H
+#define __SPP32R20XX_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -72,7 +72,7 @@ typedef enum IRQn
 
 #include <stdint.h>
 #include "core_riscv.h"
-#include "system_bes32r20xx.h"
+#include "system_spp32r20xx.h"
 
 
 /* Standard Peripheral Library old definitions (maintained for legacy purpose) */
@@ -976,7 +976,7 @@ typedef struct
 #define  RCC_PLLXTPRE_HSE                ((uint32_t)0x00000000)        /* HSE clock not divided for PLL entry */
 #define  RCC_PLLXTPRE_HSE_Div2           ((uint32_t)0x00020000)        /* HSE clock divided by 2 for PLL entry */
 
-/* for other BES32R20XX */
+/* for other SPP32R20XX */
 #define  RCC_PLLMULL2                    ((uint32_t)0x00000000)        /* PLL input clock*2 */
 #define  RCC_PLLMULL3                    ((uint32_t)0x00040000)        /* PLL input clock*3 */
 #define  RCC_PLLMULL4                    ((uint32_t)0x00080000)        /* PLL input clock*4 */
@@ -1575,7 +1575,7 @@ typedef struct
 
 
 
-#include "bes32r20xx_conf.h"
+#include "spp32r20xx_conf.h"
 
 
 #ifdef __cplusplus

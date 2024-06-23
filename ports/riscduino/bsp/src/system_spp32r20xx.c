@@ -1,14 +1,14 @@
 /********************************** (C) COPYRIGHT *******************************
-* Copyright (c) 2024  BigEndian Semiconductor Private Limited
+* Copyright (c) 2024  SiPlusPlus Semiconductor Private Limited
 * SPDX-License-Identifier: Apache-2.0
 *
-* File Name          : system_bes32r20xx.c
+* File Name          : system_spp32r20xx.c
 * Author             : Dinesh Annayya
 * Version            : V1.0.0
 * Date               : 20-June-2024
 * Description        : System clock set 10Mhz
 *********************************************************************************/
-#include "bes32r20xx.h"
+#include "spp32r20xx.h"
 
 uint32_t SystemCoreClock = 50000000;     /* System Clock Frequency: 50Mhz  */
 //uint32_t SystemCoreClock = 29491200;     /* System Clock Frequency: 29.4912Mhz  */
